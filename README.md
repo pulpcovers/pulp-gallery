@@ -77,18 +77,17 @@ This keeps feeds clean and readable.
 📁 File Structure
 
 pulp-gallery/
-│
-├── pulp-gallery.php
-├── includes/
-│   ├── class-pulp-gallery-assets.php
-│   ├── class-pulp-gallery-shortcode.php
-│   ├── rss-fallback.php
-│   └── helpers.php
-├── templates/
-│   └── gallery.php
-└── assets/
-    ├── css/
-    └── js/
+    pulp-gallery.php
+    includes/
+        class-pulp-gallery-assets.php
+        class-pulp-gallery-shortcode.php
+        rss-fallback.php
+        helpers.php
+    templates/
+        gallery.php
+    assets/
+        css/
+        js/
 
 Development
 
