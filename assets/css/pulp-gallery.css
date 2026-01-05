@@ -1,0 +1,110 @@
+.pulp-gallery .pulp-thumb {
+    padding: 4px;
+    margin: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.pulp-gallery .pulp-thumb img {
+    display: block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+
+.pulp-gallery .pulp-thumb {
+    transition: transform 0.15s ease-in-out;
+}
+
+.pulp-gallery .pulp-thumb img {
+    transition: opacity 0.15s ease-in-out;
+}
+
+.pulp-gallery .pulp-thumb:hover {
+    transform: translateY(-2px);
+}
+
+.pulp-gallery .pulp-thumb:hover img {
+    opacity: 0.8;
+}
+
+.pulp-thumb.is-active {
+    position: relative;
+}
+
+.pulp-thumb.is-active::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.15); /* adjust opacity to taste */
+    pointer-events: none;
+    border-radius: 2px; /* optional, matches image rounding if any */
+}
+
+
+/* Fade-in effect */
+.pulp-fade-in {
+    opacity: 1;
+    transition: opacity 0.25s ease-in-out;
+}
+
+[data-pulp-main]:not(.pulp-fade-in) {
+    opacity: 0;
+}
+
+/* Spinner */
+.pulp-gallery-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #ccc;
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: pulp-spin 0.6s linear infinite;
+    margin: 0 auto 12px;
+}
+
+@keyframes pulp-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Hover or long-press caption */
+.pulp-gallery-main {
+    position: relative;
+}
+
+.pulp-gallery-single-wrapper {
+    position: relative;
+}
+
+.pulp-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+/* Desktop hover */
+.pulp-gallery-main:hover .pulp-caption,
+.pulp-gallery-single-wrapper:hover .pulp-caption {
+    opacity: 1;
+}
+
+/* Mobile long-press class */
+.pulp-caption.show {
+    opacity: 1;
+}
+
+[data-pulp-main] {
+    touch-action: pan-y;
+}
