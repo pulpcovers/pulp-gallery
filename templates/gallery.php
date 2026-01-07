@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $count  = count( $images );
 $images = array_values( $images );
 
-// Preload all metadata once (massive performance win)
+// Preload all metadata once
 $meta_cache = [];
 foreach ( $images as $img ) {
     $meta_cache[ $img->ID ] = wp_get_attachment_metadata( $img->ID );
@@ -150,5 +150,6 @@ endif;
             >
         </a>
     </div>
+
 
 </div>
