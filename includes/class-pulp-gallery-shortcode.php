@@ -4,23 +4,17 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * Load RSS fallback function
- */
+	// Load RSS fallback function
 require_once PULP_GALLERY_PATH . 'includes/rss-fallback.php';
 
 class Pulp_Gallery_Shortcode {
 
-    /**
-     * Register the shortcode
-     */
+    // Register the shortcode
     public static function init() {
         add_shortcode( 'pulp_gallery', [ __CLASS__, 'render_shortcode' ] );
     }
 
-    /**
-     * Shortcode callback
-     */
+		// Shortcode callback
     public static function render_shortcode( $atts ) {
         global $post;
 
@@ -34,11 +28,7 @@ class Pulp_Gallery_Shortcode {
             'thumbsize' => 'thumbnail',
         ], $atts, 'pulp_gallery' );
 
-        /**
-         * ------------------------------------------------------------
-         * FAST ATTACHMENT QUERY
-         * ------------------------------------------------------------
-         */
+         // FAST ATTACHMENT QUERY
         $query = new WP_Query([
             'post_parent'            => $post->ID,
             'post_type'              => 'attachment',
@@ -60,24 +50,15 @@ class Pulp_Gallery_Shortcode {
             return '<div class="pulp-gallery-error">No attachments found for this post.</div>';
         }
 
-        /**
-         * ------------------------------------------------------------
-         * RSS FEED FALLBACK
-         * ------------------------------------------------------------
-         * Now that we know which images belong to this post,
-         * build a synthetic ids list and pass it to the fallback.
-         */
+        // RSS Feed Failback
         if ( is_feed() ) {
             $feed_atts         = $atts;
             $feed_atts['ids']  = implode( ',', array_map( 'intval', $image_ids ) );
             return pulp_gallery_rss_fallback_from_shortcode( $feed_atts );
         }
 
-        /**
-         * ------------------------------------------------------------
-         * Build image objects in the same structure your template expects
-         * ------------------------------------------------------------
-         */
+        // Build image objects
+		
         $images = [];
 
         foreach ( $image_ids as $id ) {
@@ -93,9 +74,7 @@ class Pulp_Gallery_Shortcode {
         return self::load_template( 'gallery.php', $data );
     }
 
-    /**
-     * Load a template file and pass variables to it
-     */
+		//Load a template file and pass variables to it
     private static function load_template( $template_name, $data = [] ) {
 
         $template_path = PULP_GALLERY_PATH . 'templates/' . $template_name;

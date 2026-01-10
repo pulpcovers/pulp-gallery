@@ -6,16 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Pulp_Gallery_Assets {
 
-    /**
-     * Initialize hooks
-     */
+    // Initialize hooks
     public static function init() {
         add_action( 'wp_enqueue_scripts', [ __CLASS__, 'maybe_enqueue_assets' ] );
     }
 
-    /**
-     * Conditionally enqueue CSS/JS only when shortcode is present.
-     */
+    // Conditionally enqueue CSS/JS only when shortcode is present
     public static function maybe_enqueue_assets() {
         global $post;
 
@@ -39,9 +35,7 @@ class Pulp_Gallery_Assets {
         }
     }
 
-    /**
-     * Register and enqueue plugin assets
-     */
+    // Register and enqueue plugin assets
     private static function enqueue_assets() {
 
         // CSS
