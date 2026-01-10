@@ -70,7 +70,7 @@ if ( $count === 1 ) :
            rel="noopener noreferrer"
            class="pulp-gallery-single-link">
 
-            <!-- Caption overlay (hover) -->
+            <!-- Caption overlay (hover + long‑press) -->
             <div class="pulp-caption"><?php echo esc_html( $alt ); ?></div>
 
             <img
@@ -138,7 +138,7 @@ endif;
            rel="noopener noreferrer"
            data-pulp-main-link>
 
-            <!-- ⭐ Caption container for hover + long‑press -->
+            <!-- Caption container for hover + long‑press -->
             <div class="pulp-caption" data-pulp-caption></div>
 
             <img
@@ -150,6 +150,5 @@ endif;
             >
         </a>
     </div>
-
 
 </div>
