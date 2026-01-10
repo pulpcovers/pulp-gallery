@@ -5,6 +5,44 @@ document.addEventListener('DOMContentLoaded', function () {
     var activeGallery = null;
     var visibilityMap = new Map();
 
+    // Helper: enable long-press caption + disable OS long-press menu
+    function enableLongPressCaption(mainLink, caption) {
+        if (!('ontouchstart' in window) || !mainLink) return;
+
+        mainLink.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        var pressTimer = null;
+        var startX = 0;
+        var startY = 0;
+        var SLACK = 12;
+
+        mainLink.addEventListener('touchstart', function (e) {
+            var t = e.touches[0];
+            startX = t.clientX;
+            startY = t.clientY;
+
+            pressTimer = setTimeout(function () {
+                caption.classList.add('show');
+            }, 500);
+        });
+
+        mainLink.addEventListener('touchmove', function (e) {
+            var t = e.touches[0];
+            var dx = Math.abs(t.clientX - startX);
+            var dy = Math.abs(t.clientY - startY);
+
+            if (dx > SLACK || dy > SLACK) {
+                clearTimeout(pressTimer);
+            }
+        });
+
+        mainLink.addEventListener('touchend', function () {
+            clearTimeout(pressTimer);
+        });
+    }
+
     // IntersectionObserver to detect which gallery is most visible
     var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
@@ -49,6 +87,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var thumbs = gallery.querySelectorAll('.pulp-thumb');
         var caption = gallery.querySelector('[data-pulp-caption]');
 
+        // Enable long-press caption for both single and multi-image galleries
+        enableLongPressCaption(mainLink || main, caption);
+
         var currentIndex = 0;
 
         // Initialize caption text
@@ -78,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Update caption text
             caption.textContent = alt || '';
+            caption.classList.remove('show');
 
             thumbs.forEach(function (t) { t.classList.remove('is-active'); });
             thumb.classList.add('is-active');
@@ -93,93 +135,92 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-		
-		// Swipe navigation
+        // Swipe navigation
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let currentX = 0;
+        let dragging = false;
 
-		let touchStartX = 0;
-		let touchStartY = 0;
-		let currentX = 0;
-		let dragging = false;
+        main.style.transition = 'transform 0.25s ease'; // smooth snap-back
 
-		main.style.transition = 'transform 0.25s ease'; // smooth snap-back
+        main.addEventListener('touchstart', function (e) {
+            caption.classList.remove('show');
+            const t = e.changedTouches[0];
+            touchStartX = t.screenX;
+            touchStartY = t.screenY;
+            dragging = true;
 
-		main.addEventListener('touchstart', function (e) {
-			const t = e.changedTouches[0];
-			touchStartX = t.screenX;
-			touchStartY = t.screenY;
-			dragging = true;
+            // Cancel any previous transform
+            main.style.transition = 'none';
+            main.style.transform = 'translateX(0)';
+        }, { passive: true });
 
-			// Cancel any previous transform
-			main.style.transition = 'none';
-			main.style.transform = 'translateX(0)';
-		}, { passive: true });
+        main.addEventListener('touchmove', function (e) {
+            if (!dragging) return;
 
-		main.addEventListener('touchmove', function (e) {
-			if (!dragging) return;
+            const t = e.changedTouches[0];
+            const dx = t.screenX - touchStartX;
+            const dy = t.screenY - touchStartY;
 
-			const t = e.changedTouches[0];
-			const dx = t.screenX - touchStartX;
-			const dy = t.screenY - touchStartY;
+            // Ignore vertical scroll
+            if (Math.abs(dy) > Math.abs(dx)) return;
 
-			// Ignore vertical scroll
-			if (Math.abs(dy) > Math.abs(dx)) return;
+            // Bounce resistance at edges
+            let resistance = 0.25;
+            if ((currentIndex === 0 && dx > 0) ||
+                (currentIndex === thumbs.length - 1 && dx < 0)) {
+                resistance = 0.15;
+            }
 
-			// Bounce resistance at edges
-			let resistance = 0.25;
-			if ((currentIndex === 0 && dx > 0) ||
-				(currentIndex === thumbs.length - 1 && dx < 0)) {
-				resistance = 0.15;
-			}
+            currentX = dx * resistance;
+            main.style.transform = `translateX(${currentX}px)`;
+        }, { passive: true });
 
-			currentX = dx * resistance;
-			main.style.transform = `translateX(${currentX}px)`;
-		}, { passive: true });
+        main.addEventListener('touchend', function (e) {
+            dragging = false;
 
-		main.addEventListener('touchend', function (e) {
-			dragging = false;
+            const t = e.changedTouches[0];
+            const dx = t.screenX - touchStartX;
+            const dy = t.screenY - touchStartY;
 
-			const t = e.changedTouches[0];
-			const dx = t.screenX - touchStartX;
-			const dy = t.screenY - touchStartY;
+            // Snap back
+            main.style.transition = 'transform 0.25s ease';
+            main.style.transform = 'translateX(0)';
 
-			// Snap back
-			main.style.transition = 'transform 0.25s ease';
-			main.style.transform = 'translateX(0)';
+            // Ignore vertical swipes
+            if (Math.abs(dy) > Math.abs(dx)) return;
 
-			// Ignore vertical swipes
-			if (Math.abs(dy) > Math.abs(dx)) return;
+            // Threshold for navigation
+            if (Math.abs(dx) < 40) return;
 
-			// Threshold for navigation
-			if (Math.abs(dx) < 40) return;
+            // Bounce at edges
+            if (currentIndex === 0 && dx > 0) {
+                main.style.transform = 'translateX(20px)';
+                setTimeout(() => main.style.transform = 'translateX(0)', 150);
+                return;
+            }
 
-			// Bounce at edges
-			if (currentIndex === 0 && dx > 0) {
-				main.style.transform = 'translateX(20px)';
-				setTimeout(() => main.style.transform = 'translateX(0)', 150);
-				return;
-			}
+            if (currentIndex === thumbs.length - 1 && dx < 0) {
+                main.style.transform = 'translateX(-20px)';
+                setTimeout(() => main.style.transform = 'translateX(0)', 150);
+                return;
+            }
 
-			if (currentIndex === thumbs.length - 1 && dx < 0) {
-				main.style.transform = 'translateX(-20px)';
-				setTimeout(() => main.style.transform = 'translateX(0)', 150);
-				return;
-			}
+            // Normal swipe navigation
+            if (dx < 0) {
+                switchTo(currentIndex + 1);
+            } else {
+                switchTo(currentIndex - 1);
+            }
+        }, { passive: true });
 
-			// Normal swipe navigation
-			if (dx < 0) {
-				switchTo(currentIndex + 1);
-			} else {
-				switchTo(currentIndex - 1);
-			}
-		}, { passive: true });
+        main.addEventListener('touchcancel', function () {
+            dragging = false;
 
-		main.addEventListener('touchcancel', function () {
-			dragging = false;
-
-			// Snap back
-			main.style.transition = 'transform 0.25s ease';
-			main.style.transform = 'translateX(0)';
-		}, { passive: true });
+            // Snap back
+            main.style.transition = 'transform 0.25s ease';
+            main.style.transform = 'translateX(0)';
+        }, { passive: true });
 
         // Keyboard navigation
         document.addEventListener('keydown', function (e) {
