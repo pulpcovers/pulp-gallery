@@ -1,9 +1,11 @@
 <?php
 /**
  * Plugin Name: Pulp Gallery
- * Description: A lightweight, fast gallery plugin for displaying images attached to posts on PulpCovers.com.
+ * Description: A lightweight, fast gallery plugin for displaying images attached to posts on PulpCovers.com
+ * Plugin URI: https://github.com/pulpcovers/pulp-gallery
  * Version: 1.0.0
  * Author: PulpCovers
+ * Author URI: https://pulpcovers.com
  * Text Domain: pulp-gallery
  */
 
@@ -43,4 +45,5 @@ function pulp_gallery_init() {
     // Register shortcode handler
     Pulp_Gallery_Shortcode::init();
 }
+
 add_action( 'plugins_loaded', 'pulp_gallery_init' );
