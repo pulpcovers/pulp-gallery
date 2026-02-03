@@ -72,13 +72,21 @@ if ( $count === 1 ) :
 
             <!-- Caption overlay (hover + long‑press) -->
             <div class="pulp-caption"><?php echo esc_html( $alt ); ?></div>
+			<?php
+			$w = $meta['width']  ?? null;
+			$h = $meta['height'] ?? null;
+			?>
+			<img
+				src="<?php echo esc_url( $main_url ); ?>"
+				alt="<?php echo esc_attr( $alt ); ?>"
+				loading="lazy"
+				class="pulp-gallery-single"
+				<?php if ( $w && $h ) : ?>
+					width="<?php echo esc_attr( $w ); ?>"
+					height="<?php echo esc_attr( $h ); ?>"
+				<?php endif; ?>
+			>
 
-            <img
-                src="<?php echo esc_url( $main_url ); ?>"
-                alt="<?php echo esc_attr( $alt ); ?>"
-                loading="lazy"
-                class="pulp-gallery-single"
-            >
         </a>
     </div>
 <?php
@@ -109,11 +117,21 @@ endif;
                 data-pulp-alt="<?php echo esc_attr( $alt ); ?>"
                 data-pulp-full="<?php echo esc_url( pulp_get_image_url( $image->ID, 'full', $meta ) ); ?>"
             >
-                <img
-                    src="<?php echo esc_url( $thumb_url ); ?>"
-                    alt="<?php echo esc_attr( $alt ); ?>"
-                    loading="lazy"
-                >
+                <?php
+				$thumb_meta = $meta['sizes'][ $atts['thumbsize'] ] ?? null;
+				$tw = $thumb_meta['width']  ?? null;
+				$th = $thumb_meta['height'] ?? null;
+				?>
+				<img
+					src="<?php echo esc_url( $thumb_url ); ?>"
+					alt="<?php echo esc_attr( $alt ); ?>"
+					loading="lazy"
+					<?php if ( $tw && $th ) : ?>
+						width="<?php echo esc_attr( $tw ); ?>"
+						height="<?php echo esc_attr( $th ); ?>"
+					<?php endif; ?>
+				>
+
             </button>
         <?php endforeach; ?>
     </div>
@@ -141,14 +159,21 @@ endif;
             <!-- Caption container for hover + long‑press -->
             <div class="pulp-caption" data-pulp-caption></div>
 
-            <img
-                data-pulp-main
-                src="<?php echo esc_url( $first_url ); ?>"
-                alt="<?php echo esc_attr( $first_alt ); ?>"
-                loading="lazy"
-                class="pulp-fade-in"
-            >
+			<?php
+			$mw = $first_meta['width']  ?? null;
+			$mh = $first_meta['height'] ?? null;
+			?>
+			<img
+				data-pulp-main
+				src="<?php echo esc_url( $first_url ); ?>"
+				alt="<?php echo esc_attr( $first_alt ); ?>"
+				loading="lazy"
+				class="pulp-fade-in"
+				<?php if ( $mw && $mh ) : ?>
+					width="<?php echo esc_attr( $mw ); ?>"
+					height="<?php echo esc_attr( $mh ); ?>"
+				<?php endif; ?>
+			>
         </a>
     </div>
-
 </div>
