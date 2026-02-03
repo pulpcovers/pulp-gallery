@@ -15,9 +15,35 @@ $count  = count( $images );
 $images = array_values( $images );
 
 // Preload all metadata once
+global $wpdb;
+$image_ids = wp_list_pluck( $images, 'ID' );
+$ids_placeholder = implode( ',', array_fill( 0, count( $image_ids ), '%d' ) );
+
+$bulk_data = $wpdb->get_results( 
+    $wpdb->prepare( "
+        SELECT 
+            p.ID,
+            p.post_title,
+            MAX(CASE WHEN pm.meta_key = '_wp_attachment_metadata' THEN pm.meta_value END) as metadata,
+            MAX(CASE WHEN pm.meta_key = '_wp_attachment_image_alt' THEN pm.meta_value END) as alt_text
+        FROM {$wpdb->posts} p
+        LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+        WHERE p.ID IN ({$ids_placeholder})
+        AND (pm.meta_key IN ('_wp_attachment_metadata', '_wp_attachment_image_alt') OR pm.meta_key IS NULL)
+        GROUP BY p.ID
+    ", $image_ids ),
+    OBJECT_K
+);
+
+// Build lookup arrays
 $meta_cache = [];
-foreach ( $images as $img ) {
-    $meta_cache[ $img->ID ] = wp_get_attachment_metadata( $img->ID );
+$alt_cache = [];
+$title_cache = [];
+
+foreach ( $bulk_data as $id => $data ) {
+    $meta_cache[ $id ] = !empty( $data->metadata ) ? maybe_unserialize( $data->metadata ) : [];
+    $alt_cache[ $id ] = $data->alt_text ?? '';
+    $title_cache[ $id ] = $data->post_title ?? '';
 }
 
 // Helper: get URL for a given size without calling wp_get_attachment_image_src()
@@ -43,7 +69,7 @@ if ( ! function_exists( 'pulp_get_image_url' ) ) {
                    trailingslashit( $subdir ) .
                    $meta['sizes'][ $size ]['file'];
         }
-
+		
         // Fallback to WP
         $fallback = wp_get_attachment_image_src( $id, $size );
         return $fallback ? $fallback[0] : '';
@@ -52,17 +78,11 @@ if ( ! function_exists( 'pulp_get_image_url' ) ) {
 
 // Single image case
 if ( $count === 1 ) :
-
     $image = $images[0];
     $meta  = $meta_cache[ $image->ID ];
-
     $main_url = pulp_get_image_url( $image->ID, $atts['size'], $meta );
     $full_url = pulp_get_image_url( $image->ID, 'full', $meta );
-
-    $alt = get_post_meta( $image->ID, '_wp_attachment_image_alt', true );
-    if ( empty( $alt ) ) {
-        $alt = get_the_title( $image->ID );
-    }
+    $alt = !empty( $alt_cache[ $image->ID ] ) ? $alt_cache[ $image->ID ] : $title_cache[ $image->ID ];
 ?>
     <div class="pulp-gallery-single-wrapper">
         <a href="<?php echo esc_url( $full_url ); ?>"
@@ -98,16 +118,10 @@ endif;
 
     <div class="pulp-gallery-thumbs">
         <?php foreach ( $images as $index => $image ) :
-
             $meta = $meta_cache[ $image->ID ];
-
             $thumb_url = pulp_get_image_url( $image->ID, $atts['thumbsize'], $meta );
             $main_url  = pulp_get_image_url( $image->ID, $atts['size'], $meta );
-
-            $alt = get_post_meta( $image->ID, '_wp_attachment_image_alt', true );
-            if ( empty( $alt ) ) {
-                $alt = get_the_title( $image->ID );
-            }
+			$alt = !empty( $alt_cache[ $image->ID ] ) ? $alt_cache[ $image->ID ] : $title_cache[ $image->ID ];
         ?>
             <button
                 class="pulp-thumb <?php echo $index === 0 ? 'is-active' : ''; ?>"
@@ -141,11 +155,7 @@ endif;
     $first      = $images[0];
     $first_meta = $meta_cache[ $first->ID ];
     $first_url  = pulp_get_image_url( $first->ID, $atts['size'], $first_meta );
-
-    $first_alt = get_post_meta( $first->ID, '_wp_attachment_image_alt', true );
-    if ( empty( $first_alt ) ) {
-        $first_alt = get_the_title( $first->ID );
-    }
+    $first_alt = !empty( $alt_cache[ $first->ID ] ) ? $alt_cache[ $first->ID ] : $title_cache[ $first->ID ];
     ?>
 
     <div class="pulp-gallery-main">
