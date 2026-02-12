@@ -45,32 +45,6 @@ foreach ( $bulk_data as $id => $data ) {
     $title_cache[ $id ] = $data->post_title ?? '';
 }
 
-// Helper: get URL for a given size without calling wp_get_attachment_image_src()
-if ( ! function_exists( 'pulp_get_image_url' ) ) {
-    function pulp_get_image_url( $id, $size, $meta ) {
-        // If metadata missing, fallback
-        if ( empty( $meta ) ) {
-            $fallback = wp_get_attachment_image_src( $id, $size );
-            return $fallback ? $fallback[0] : '';
-        }
-        $upload_dir = wp_upload_dir();
-        // Full size
-        if ( $size === 'full' ) {
-            return wp_get_attachment_url( $id );
-        }
-        // If this size exists
-        if ( isset( $meta['sizes'][ $size ] ) ) {
-            $subdir = dirname( $meta['file'] ); // e.g. "2024/01"
-            return trailingslashit( $upload_dir['baseurl'] ) .
-                   trailingslashit( $subdir ) .
-                   $meta['sizes'][ $size ]['file'];
-        }
-        // Fallback to WP
-        $fallback = wp_get_attachment_image_src( $id, $size );
-        return $fallback ? $fallback[0] : '';
-    }
-}
-
 // Single image case
 if ( $count === 1 ) :
     $image = $images[0];
