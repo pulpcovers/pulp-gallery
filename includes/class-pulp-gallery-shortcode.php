@@ -4,9 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-	// Load RSS fallback function
-require_once PULP_GALLERY_PATH . 'includes/rss-fallback.php';
-
 class Pulp_Gallery_Shortcode {
 
     // Register the shortcode
@@ -22,11 +19,31 @@ class Pulp_Gallery_Shortcode {
             return '<div class="pulp-gallery-error">No attachments found for this post.</div>';
         }
 
-        // Default shortcode attributes
-        $atts = shortcode_atts([
-            'size'      => 'medium',
-            'thumbsize' => 'thumbnail',
-        ], $atts, 'pulp_gallery' );
+		// Parse shortcode attributes
+			// Default shortcode attributes
+		$atts = shortcode_atts([
+			'size'      => 'medium',
+			'thumbsize' => 'thumbnail',
+		], $atts, 'pulp_gallery' );
+
+		// Sanitize attributes
+		$atts['size'] = sanitize_key( $atts['size'] );
+		$atts['thumbsize'] = sanitize_key( $atts['thumbsize'] );
+
+		// Validate against registered image sizes
+		$allowed_sizes = array_merge(
+			get_intermediate_image_sizes(),
+			['full']
+		);
+
+		// Fallback to defaults if invalid
+		if ( ! in_array( $atts['size'], $allowed_sizes, true ) ) {
+			$atts['size'] = 'medium';
+		}
+
+		if ( ! in_array( $atts['thumbsize'], $allowed_sizes, true ) ) {
+			$atts['thumbsize'] = 'thumbnail';
+		}
 
          // FAST ATTACHMENT QUERY
         $query = new WP_Query([
