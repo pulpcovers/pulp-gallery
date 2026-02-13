@@ -100,9 +100,9 @@ class Pulp_Gallery_Shortcode {
             return '<!-- Pulp Gallery template missing: ' . esc_html( $template_name ) . ' -->';
         }
 
-        if ( ! empty( $data ) ) {
-            extract( $data, EXTR_SKIP );
-        }
+        // Make variables available to template
+		$atts = $data['atts'] ?? [];
+		$images = $data['images'] ?? [];
 
         ob_start();
         include $template_path;
