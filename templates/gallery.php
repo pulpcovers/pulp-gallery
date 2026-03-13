@@ -10,29 +10,33 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 $count  = count( $images );
 $images = array_values( $images );
 
 // Preload all metadata once
 global $wpdb;
 $image_ids = wp_list_pluck( $images, 'ID' );
-$ids_placeholder = implode( ',', array_fill( 0, count( $image_ids ), '%d' ) );
-
+// Create proper placeholders for prepare()
+$placeholders = implode( ',', array_fill( 0, count( $image_ids ), '%d' ) );
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 $bulk_data = $wpdb->get_results(
-    $wpdb->prepare( "
-        SELECT
+    $wpdb->prepare(
+        "SELECT
             p.ID,
             p.post_title,
             MAX(CASE WHEN pm.meta_key = '_wp_attachment_metadata' THEN pm.meta_value END) as metadata,
             MAX(CASE WHEN pm.meta_key = '_wp_attachment_image_alt' THEN pm.meta_value END) as alt_text
         FROM {$wpdb->posts} p
         LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-        WHERE p.ID IN ({$ids_placeholder})
+        WHERE p.ID IN ({$placeholders})
         AND (pm.meta_key IN ('_wp_attachment_metadata', '_wp_attachment_image_alt') OR pm.meta_key IS NULL)
-        GROUP BY p.ID
-    ", $image_ids ),
+        GROUP BY p.ID",
+        ...$image_ids
+    ),
     OBJECT_K
 );
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 
 // Build lookup arrays
 $meta_cache = [];
