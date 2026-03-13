@@ -6,6 +6,7 @@
 * Version: 1.1.0
 * Author: PulpCovers
 * Author URI: https://pulpcovers.com
+* License: CC0-1.0
 * Text Domain: pulp-gallery
 */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -66,3 +67,4 @@ function pulp_gallery_init() {
     Pulp_Gallery_Shortcode::init();
 }
 add_action( 'plugins_loaded', 'pulp_gallery_init' );
+
