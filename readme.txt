@@ -3,7 +3,7 @@ Contributors: pulpcovers
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: CC0-1.0
 License URI: https://creativecommons.org/publicdomain/zero/1.0/
 
@@ -62,3 +62,4 @@ When viewed in RSS readers, the plugin outputs medium‑sized images, each linki
 
 Released under CC0 1.0 Universal (public domain).  
 Free to use, modify, or redistribute without restriction.
+
