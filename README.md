@@ -72,16 +72,25 @@ This keeps feeds clean and readable.
 ```
 pulp-gallery/
     pulp-gallery.php
+    readme.txt
+    README.md
+    uninstall.php
+
     includes/
         class-pulp-gallery-assets.php
         class-pulp-gallery-shortcode.php
+        class-pulp-gallery-settings.php
         rss-fallback.php
         helpers.php
+
     templates/
         gallery.php
+
     assets/
         css/
+            pulp-gallery.css
         js/
+            pulp-gallery.js
 ```
 
 ## Development
