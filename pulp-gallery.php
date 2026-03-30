@@ -5,7 +5,6 @@
 * Plugin URI: https://github.com/pulpcovers/pulp-gallery
 * Version: 1.1.0
 * Author: PulpCovers
-* Author URI: https://pulpcovers.com
 * License: CC0-1.0
 * Text Domain: pulp-gallery
 */
@@ -23,7 +22,9 @@ define( 'PULP_GALLERY_URL', plugin_dir_url( __FILE__ ) );
 
 // Read version from plugin header automatically
 if ( ! defined( 'PULP_GALLERY_VERSION' ) ) {
+    // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
     $plugin_data = get_file_data( __FILE__, array( 'Version' => 'Version' ) );
+    // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
     define( 'PULP_GALLERY_VERSION', $plugin_data['Version'] );
 }
 
@@ -32,6 +33,7 @@ if ( ! defined( 'PULP_GALLERY_VERSION' ) ) {
 * Autoload Includes
 * ------------------------------------------------------------
 */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 $pulp_gallery_required_files = array(
     'includes/class-pulp-gallery-assets.php',
     'includes/class-pulp-gallery-shortcode.php',
@@ -54,6 +56,7 @@ foreach ( $pulp_gallery_required_files as $file ) {
     }
     require_once $filepath;
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 /**
 * ------------------------------------------------------------
@@ -67,4 +70,3 @@ function pulp_gallery_init() {
     Pulp_Gallery_Shortcode::init();
 }
 add_action( 'plugins_loaded', 'pulp_gallery_init' );
-
