@@ -5,7 +5,7 @@
 * Plugin URI: https://github.com/pulpcovers/pulp-gallery
 * Version: 1.1.0
 * Author: PulpCovers
-* License: CC0-1.0
+* License: GPLv2 or later
 * Text Domain: pulp-gallery
 */
 if ( ! defined( 'ABSPATH' ) ) {
