@@ -79,7 +79,6 @@ pulp-gallery/
     includes/
         class-pulp-gallery-assets.php
         class-pulp-gallery-shortcode.php
-        class-pulp-gallery-settings.php
         rss-fallback.php
         helpers.php
 
