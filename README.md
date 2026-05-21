@@ -101,8 +101,5 @@ pulp-gallery/
 
 ## License
 
-Creative Commons CC0 1.0 Universal  
-https://creativecommons.org/publicdomain/zero/1.0/
-
 This plugin is dedicated to the public domain.
 You may use, modify, redistribute, or incorporate it into any project without restriction.
