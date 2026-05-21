@@ -1,9 +1,9 @@
 === Pulp Gallery ===
 Contributors: pulpcovers
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,14 +52,52 @@ Attributes:
 
 When viewed in RSS readers, the plugin outputs medium‑sized images, each linking to the full image, with no JavaScript or UI elements.
 
+== Frequently Asked Questions ==
+
+= How do I add images to the gallery? =
+Edit the post, upload images via the Media Library while editing, 
+then save. WordPress automatically attaches those images to the 
+post and the shortcode displays them.
+
+= Can I use the gallery more than once on a page? =
+Yes. Each [pulp_gallery] shortcode displays the images attached 
+to the current post.
+
+= Can I change the image sizes? =
+Yes. Use the size and thumbsize attributes:
+[pulp_gallery size="medium" thumbsize="thumbnail"]
+Any registered WordPress image size is supported.
+
+= Does it work on mobile? =
+Yes. The gallery supports swipe and drag navigation on touch 
+devices.
+
+= Does it work with keyboard navigation? =
+Yes. Use the Left and Right arrow keys to navigate between images.
+
+= Does it work in RSS feeds? =
+Yes. When viewed in a feed reader, the plugin outputs a 
+simplified static version with medium-sized images linking to 
+the full image. No JavaScript or interactive elements are 
+included.
+
+= Does it require jQuery or any other libraries? =
+No. The plugin has zero external dependencies.
+
+= What post types does it support? =
+Any post type that supports media attachments.
+
 == Installation ==
 
 1. Upload the plugin folder to /wp-content/plugins/
 2. Activate Pulp Gallery
 3. Add the shortcode to any post or page
 
-== License ==
+== Changelog ==
 
-Released under CC0 1.0 Universal (public domain).  
-Free to use, modify, or redistribute without restriction.
+= 1.1.1 =
+* Updated WordPress compatibility to 7.0
+
+= 1.1.0 =
+* Previous release
 
