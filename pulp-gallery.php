@@ -3,7 +3,7 @@
 * Plugin Name: Pulp Gallery
 * Description: A lightweight, fast gallery plugin for displaying images attached to posts on PulpCovers.com
 * Plugin URI: https://github.com/pulpcovers/pulp-gallery
-* Version: 1.1.0
+* Version: 1.1.1
 * Author: PulpCovers
 * License: GPLv2 or later
 * Text Domain: pulp-gallery
