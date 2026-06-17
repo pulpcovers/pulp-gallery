@@ -36,8 +36,8 @@ Attributes:
 
 1. Edit a post  
 2. Upload images via the Media Library  
-3. Save the post  
-4. Insert [pulp_gallery]
+3. Insert [pulp_gallery] shortcode
+4. Save the post  
 
 == Features ==
 
