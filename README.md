@@ -101,5 +101,5 @@ pulp-gallery/
 
 ## License
 
-This plugin is dedicated to the public domain.
-You may use, modify, redistribute, or incorporate it into any project without restriction.
+This plugin is licensed under the GNU General Public License v2 or later.
+See [LICENSE](LICENSE) for the full license text.
