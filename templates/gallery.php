@@ -1,52 +1,29 @@
 <?php
 /**
-* Template: Gallery Output
-*
-* Variables passed from shortcode:
-* - $atts   (array)  Shortcode attributes
-* - $images (array)  Attached image objects
-*/
+ * Template: Gallery Output
+ *
+ * Variables passed from shortcode:
+ * - $atts   (array)  Shortcode attributes
+ * - $images (array)  Attached image objects
+ */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 $count  = count( $images );
 $images = array_values( $images );
 
-// Preload all metadata once
-global $wpdb;
-$image_ids = wp_list_pluck( $images, 'ID' );
-// Create proper placeholders for prepare()
-$placeholders = implode( ',', array_fill( 0, count( $image_ids ), '%d' ) );
-// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
-$bulk_data = $wpdb->get_results(
-    $wpdb->prepare(
-        "SELECT
-            p.ID,
-            p.post_title,
-            MAX(CASE WHEN pm.meta_key = '_wp_attachment_metadata' THEN pm.meta_value END) as metadata,
-            MAX(CASE WHEN pm.meta_key = '_wp_attachment_image_alt' THEN pm.meta_value END) as alt_text
-        FROM {$wpdb->posts} p
-        LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-        WHERE p.ID IN ({$placeholders})
-        AND (pm.meta_key IN ('_wp_attachment_metadata', '_wp_attachment_image_alt') OR pm.meta_key IS NULL)
-        GROUP BY p.ID",
-        ...$image_ids
-    ),
-    OBJECT_K
-);
-// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
-
-// Build lookup arrays
-$meta_cache = [];
-$alt_cache = [];
+// Build lookup arrays using WordPress API functions.
+// WP_Query was called with 'update_post_meta_cache' => true,
+// so all postmeta is already in the object cache — zero new queries.
+$meta_cache  = [];
+$alt_cache   = [];
 $title_cache = [];
 
-foreach ( $bulk_data as $id => $data ) {
-    $meta_cache[ $id ] = !empty( $data->metadata ) ? maybe_unserialize( $data->metadata ) : [];
-    $alt_cache[ $id ] = $data->alt_text ?? '';
-    $title_cache[ $id ] = $data->post_title ?? '';
+foreach ( $images as $image ) {
+    $meta_cache[ $image->ID ]  = wp_get_attachment_metadata( $image->ID );
+    $alt_cache[ $image->ID ]   = get_post_meta( $image->ID, '_wp_attachment_image_alt', true );
+    $title_cache[ $image->ID ] = $image->post_title ?? '';
 }
 
 // Single image case
