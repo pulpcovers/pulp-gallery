@@ -15,28 +15,9 @@ class Pulp_Gallery_Assets {
     public static function maybe_enqueue_assets() {
         global $post;
 
-        // Always load CSS on the frontend
-        wp_enqueue_style(
-            'pulp-gallery-css',
-            PULP_GALLERY_URL . 'assets/css/pulp-gallery.css',
-            [],
-            PULP_GALLERY_VERSION
-        );
-
-        // Load JS anywhere the shortcode appears
-        if ( $post instanceof WP_Post && has_shortcode( $post->post_content, 'pulp_gallery' ) ) {
-            wp_enqueue_script(
-                'pulp-gallery-js',
-                PULP_GALLERY_URL . 'assets/js/pulp-gallery.js',
-                [],
-                PULP_GALLERY_VERSION,
-                true
-            );
+        if ( ! $post instanceof WP_Post || ! has_shortcode( $post->post_content, 'pulp_gallery' ) ) {
+            return;
         }
-    }
-
-    // Register and enqueue plugin assets
-    private static function enqueue_assets() {
 
         // CSS
         wp_enqueue_style(
@@ -52,7 +33,7 @@ class Pulp_Gallery_Assets {
             PULP_GALLERY_URL . 'assets/js/pulp-gallery.js',
             [],
             PULP_GALLERY_VERSION,
-            true // load in footer
+            true
         );
     }
 }
