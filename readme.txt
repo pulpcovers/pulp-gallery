@@ -3,7 +3,7 @@ Contributors: pulpcovers
 Requires at least: 5.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,6 +94,11 @@ Any post type that supports media attachments.
 3. Add the shortcode to any post or page
 
 == Changelog ==
+
+= 1.2.0 =
+* Replaced direct database query with WordPress API functions
+* CSS and JS now load only when shortcode is present
+* Removed dead code
 
 = 1.1.1 =
 * Updated WordPress compatibility to 7.0
