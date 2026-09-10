@@ -99,6 +99,28 @@ pulp-gallery/
   git clone https://github.com/pulpcovers/pulp-gallery.git
   ```
 
+## Changelog
+
+### 1.3.0
+
+- Improved Largest Contentful Paint performance by eagerly loading the first primary gallery image
+- Added high fetch priority to the first primary gallery image rendered on a page
+- Preserved lazy loading for subsequent gallery images and thumbnails
+
+### 1.2.0
+
+- Replaced direct database query with WordPress API functions
+- CSS and JS now load only when shortcode is present
+- Removed dead code
+
+### 1.1.1
+
+- Updated WordPress compatibility to 7.0
+
+### 1.1.0
+
+- Previous release
+
 ## License
 
 This plugin is licensed under the GNU General Public License v2 or later.
