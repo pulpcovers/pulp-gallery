@@ -43,3 +43,31 @@ if ( ! function_exists( 'pulp_get_image_url' ) ) {
         return $fallback ? $fallback[0] : '';
     }
 }
+
+/**
+ * Get loading attributes for a gallery's primary image.
+ *
+ * Only the first primary image rendered on a page is prioritized as the likely
+ * Largest Contentful Paint element. Later gallery images remain lazy-loaded.
+ *
+ * @return array<string, string> Image loading attributes.
+ */
+if ( ! function_exists( 'pulp_get_primary_image_loading_attributes' ) ) {
+    function pulp_get_primary_image_loading_attributes() {
+        static $primary_image_rendered = false;
+
+        if ( ! $primary_image_rendered ) {
+            $primary_image_rendered = true;
+
+            return [
+                'loading'       => 'eager',
+                'fetchpriority' => 'high',
+            ];
+        }
+
+        return [
+            'loading'       => 'lazy',
+            'fetchpriority' => 'auto',
+        ];
+    }
+}
