@@ -33,6 +33,7 @@ if ( $count === 1 ) :
     $main_url = pulp_get_image_url( $image->ID, $atts['size'], $meta );
     $full_url = pulp_get_image_url( $image->ID, 'full', $meta );
     $alt = !empty( $alt_cache[ $image->ID ] ) ? $alt_cache[ $image->ID ] : $title_cache[ $image->ID ];
+    $loading_attributes = pulp_get_primary_image_loading_attributes();
 ?>
     <div class="pulp-gallery-single-wrapper">
         <a href="<?php echo esc_url( $full_url ); ?>"
@@ -47,7 +48,8 @@ if ( $count === 1 ) :
             <img
                 src="<?php echo esc_url( $main_url ); ?>"
                 alt="<?php echo esc_attr( $alt ); ?>"
-                loading="lazy"
+                loading="<?php echo esc_attr( $loading_attributes['loading'] ); ?>"
+                fetchpriority="<?php echo esc_attr( $loading_attributes['fetchpriority'] ); ?>"
                 class="pulp-gallery-single"
                 <?php if ( $w && $h ) : ?>
                     width="<?php echo esc_attr( $w ); ?>"
@@ -110,6 +112,7 @@ endif;
     $first_meta = $meta_cache[ $first->ID ];
     $first_url  = pulp_get_image_url( $first->ID, $atts['size'], $first_meta );
     $first_alt  = !empty( $alt_cache[ $first->ID ] ) ? $alt_cache[ $first->ID ] : $title_cache[ $first->ID ];
+    $loading_attributes = pulp_get_primary_image_loading_attributes();
     
     // Get dimensions for the display size (same as thumbnails)
     $first_size_meta = $first_meta['sizes'][ $atts['size'] ] ?? $first_meta;
@@ -127,7 +130,8 @@ endif;
                 data-pulp-main
                 src="<?php echo esc_url( $first_url ); ?>"
                 alt="<?php echo esc_attr( $first_alt ); ?>"
-                loading="lazy"
+                loading="<?php echo esc_attr( $loading_attributes['loading'] ); ?>"
+                fetchpriority="<?php echo esc_attr( $loading_attributes['fetchpriority'] ); ?>"
                 class="pulp-fade-in"
                 <?php if ( $mw && $mh ) : ?>
                     width="<?php echo esc_attr( $mw ); ?>"
