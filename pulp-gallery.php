@@ -5,6 +5,7 @@
 * Plugin URI: https://github.com/pulpcovers/pulp-gallery
 * Version: 1.3.0
 * Author: PulpCovers
+* Author URI: https://pulpcovers.com
 * License: GPLv2 or later
 * Text Domain: pulp-gallery
 */
