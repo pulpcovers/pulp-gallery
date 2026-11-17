@@ -86,12 +86,21 @@ document.addEventListener('DOMContentLoaded', function () {
         // Fade-in reset on load
         main.addEventListener('load', function () {
             main.classList.add('pulp-fade-in');
+            main.classList.remove('pulp-load-error');
+            spinner.hidden = true;
+        });
+
+        // Don't leave a blank image and endless spinner if the image fails to load
+        main.addEventListener('error', function () {
+            main.classList.add('pulp-fade-in', 'pulp-load-error');
             spinner.hidden = true;
         });
         
         // Switch image helper
         function switchTo(index) {
             if (index < 0 || index >= thumbs.length) return;
+            // Re-selecting the current image fires no load event, which would leave the spinner stuck
+            if (index === currentIndex && !main.classList.contains('pulp-load-error')) return;
             var thumb = thumbs[index];
             var src = thumb.getAttribute('data-pulp-src');
             var alt = thumb.getAttribute('data-pulp-alt');
@@ -214,6 +223,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // Keyboard navigation
         document.addEventListener('keydown', function (e) {
             if (activeGallery !== gallery) return;
+            if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+            var target = e.target;
+            if (target && target.closest &&
+                target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) {
+                return;
+            }
             switch (e.key) {
                 case 'ArrowLeft':
                     switchTo(currentIndex - 1);
