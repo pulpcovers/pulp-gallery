@@ -1,0 +1,30 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Lint and Plugin Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Lint PHP
+        run: find . -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      # Check the same files that will be deployed (honours .distignore)
+      - name: Build distributable copy
+        run: |
+          mkdir -p "$RUNNER_TEMP/pulp-gallery"
+          rsync -a --exclude-from=.distignore ./ "$RUNNER_TEMP/pulp-gallery/"
+
+      - name: Run Plugin Check
+        uses: WordPress/plugin-check-action@v1
+        with:
+          build-dir: ${{ runner.temp }}/pulp-gallery
